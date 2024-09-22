@@ -1,0 +1,35 @@
+# version: '3.9'
+
+services:
+
+  ms-sql:
+    container_name: ms-sql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      # MSSQL_DB: "${NTO_POSTGRES_DB}"
+      # MSSQL_USER: "${NTO_POSTGRES_USER}"
+      MSSQL_SA_PASSWORD: "${MSSQL_PASSWORD}"
+      MSSQL_PID: "Developer"
+      TZ: "Europe/Moscow"
+    volumes:
+      - ./volumes/ms-sql/:/var/opt/mssql/
+    ports:
+      - ${MSSQL_PORT}:1433
+    restart: unless-stopped
+    networks:
+      - base_network
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      - base_network
+
+networks:
+  base_network:
+    name: ms-sql-network
+    driver: bridge
