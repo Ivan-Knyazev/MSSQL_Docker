@@ -1,6 +1,6 @@
 # Instruction to up DB from backup in Docker container
 
-### Full instruction:
+### Full instruction on official site Microsoft:
 
 [learn.microsoft.com -> SQL -> restore-backup-in-sql-server-container](https://learn.microsoft.com/ru-ru/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver16&tabs=cli)
 
@@ -11,10 +11,14 @@
 
 1. Run instructions from [copy-a-backup-file-into-the-container](https://learn.microsoft.com/ru-ru/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver16&tabs=cli#copy-a-backup-file-into-the-container)
 
+- Copy file `AdventureWorksLT2017.bak` from this repository
+
+## RESTORE:
+
 2. Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost \
-   -U SA -P '%N4!aJ4E8&4O' \
+   -U SA -P '<your_password>' \
    -Q 'RESTORE FILELISTONLY FROM DISK = "/var/opt/mssql/backup/AdventureWorksLT2017.bak"' \
    | tr -s ' ' | cut -d ' ' -f 1-2
 ```
@@ -24,12 +28,10 @@ docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost \
 RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup/AdventureWorksLT2017.bak'
 ```
 
-## RESTORE:
-
 3. Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C \
-   -S localhost -U SA -P '%N4!aJ4E8&4O' \
+   -S localhost -U SA -P '<your_password>' \
    -Q 'RESTORE DATABASE AdventureWorksLT2017 FROM DISK = "/var/opt/mssql/backup/AdventureWorksLT2017.bak" WITH MOVE "AdventureWorksLT2012_Data" TO "/var/opt/mssql/data/AdventureWorksLT2017_data.ndf", MOVE "AdventureWorksLT2012_Log" TO "/var/opt/mssql/data/AdventureWorksLT2017.ldf"'
 ```
 
@@ -44,8 +46,12 @@ RESTORE DATABASE AdventureWorksLT2017 FROM DISK = '/var/opt/mssql/backup/Adventu
 4. Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C \
-   -S localhost -U SA -P '%N4!aJ4E8&4O' \
-   -Q 'SELECT Name FROM sys.Databases'
+   -S localhost -U SA -P '<your_password>' \
+   -Q 'USE AdventureWorksLT2017;
+      SELECT 
+         P.ProductID, 
+         P.Name 
+      FROM SalesLT.Product AS P;'
 ```
 
    - Or in SQL Client:
