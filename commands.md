@@ -9,16 +9,25 @@
 
 ## PREPARATION:
 
-1. Run instructions from [copy-a-backup-file-into-the-container](https://learn.microsoft.com/ru-ru/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver16&tabs=cli#copy-a-backup-file-into-the-container)
+1. Create directory `/var/opt/mssql/backup` in container:
+```
+docker exec -it ms-sql mkdir /var/opt/mssql/backup
+```
 
-- Copy file `AdventureWorksLT2017.bak` from this repository
+2. Copy file `AdventureWorksLT2017.bak` from this repository:
+```
+docker cp AdventureWorksLT2017.bak ms-sql:/var/opt/mssql/backup
+```
+
+- Or run instructions from [copy-a-backup-file-into-the-container](https://learn.microsoft.com/ru-ru/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver16&tabs=cli#copy-a-backup-file-into-the-container)
+
 
 ## RESTORE:
 
-2. Run in `bash`:
+1. Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost \
-   -U SA -P '<your_password>' \
+   -U SA -P $MSSQL_PASSWORD \
    -Q 'RESTORE FILELISTONLY FROM DISK = "/var/opt/mssql/backup/AdventureWorksLT2017.bak"' \
    | tr -s ' ' | cut -d ' ' -f 1-2
 ```
@@ -28,10 +37,10 @@ docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost \
 RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup/AdventureWorksLT2017.bak'
 ```
 
-3. Run in `bash`:
+2. Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C \
-   -S localhost -U SA -P '<your_password>' \
+   -S localhost -U SA -P $MSSQL_PASSWORD \
    -Q 'RESTORE DATABASE AdventureWorksLT2017 FROM DISK = "/var/opt/mssql/backup/AdventureWorksLT2017.bak" WITH MOVE "AdventureWorksLT2012_Data" TO "/var/opt/mssql/data/AdventureWorksLT2017_data.ndf", MOVE "AdventureWorksLT2012_Log" TO "/var/opt/mssql/data/AdventureWorksLT2017.ldf"'
 ```
 
@@ -43,10 +52,10 @@ RESTORE DATABASE AdventureWorksLT2017 FROM DISK = '/var/opt/mssql/backup/Adventu
 
 ## CHECK:
 
-4. Run in `bash`:
+Run in `bash`:
 ```bash
 docker exec -it ms-sql /opt/mssql-tools18/bin/sqlcmd -C \
-   -S localhost -U SA -P '<your_password>' \
+   -S localhost -U SA -P $MSSQL_PASSWORD \
    -Q 'USE AdventureWorksLT2017;
       SELECT 
          P.ProductID, 

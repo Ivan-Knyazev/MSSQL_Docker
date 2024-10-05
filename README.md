@@ -14,7 +14,7 @@
 
 3) Run the command `make run` below
     - If the container has not started, inspect errors `docker logs <conteiner_id>`
-    - If there are few access rights, run `make chown`
+    - If there are few access rights, run `sudo make chown`
 
 4) Connect to the database in SQL Client (for example, [Adminer](http://localhost:8080)) and check that it works.
 
