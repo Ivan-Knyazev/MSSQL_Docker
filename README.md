@@ -50,6 +50,6 @@ make clean
 
 If you don't have utility `make`, run commands from [Makefile](./Makefile)
 
-<br/>
+<hr>
 
-This repository was created to study SQL in the `Data Bases` course at NUST `MISIS` 22.09.24
+This repository was created to study SQL in the `make` `Data Bases` course at NUST `MISIS` 22.09.24
